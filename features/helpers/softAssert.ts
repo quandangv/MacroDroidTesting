@@ -1,40 +1,44 @@
-import { DefineStepPattern } from "@cucumber/cucumber/lib/support_code_library_builder/types"
-import { Then, world } from "@wdio/cucumber-framework"
-import { JestAssertionError } from "expect"
-import arity from "util-arity"
+import { DefineStepPattern } from "@cucumber/cucumber/lib/support_code_library_builder/types";
+import { Then, IWorld } from "@wdio/cucumber-framework";
+// WebdriverIO's expect throws JestAssertionError, so we'll also use it as our error class
+import { JestAssertionError } from "expect";
+import arity from "util-arity";
 
-function flush(errors: any[]) {
+function flush(errors: [JestAssertionError, string | undefined][]) {
   if (errors.length > 0) {
-    if (errors.length == 1) throw errors[0]
-    let message = `${errors.length} errors`
-    for (const [i, error] of errors.entries()) {
-      message += `\n\n${i + 1}/${errors.length} ${error}`
+    let message = `${errors.length} errors`;
+    for (const [i, [error, submessage]] of errors.entries()) {
+      message += `\n\n${i + 1}/${errors.length} ${submessage ?? ""} ${error}`;
     }
-    console.log(errors[0].constructor.name)
-    throw new JestAssertionError(message)
+    throw new JestAssertionError(message);
   }
 }
 
-export async function soft(fn: () => Promise<void> | void): Promise<boolean> {
-  try {
-    await fn()
-    return true
-  } catch (e: any) {
-    world.parameters.errorTracker.push(e)
-    return false
-  }
-}
-
-export function TryThen<A extends any[], R>(
+export default function TryThen<A extends any[], R>(
   pattern: DefineStepPattern,
-  code: (this: any, ...args: A) => R
+  code: (
+    this: any,
+    soft: (fn: () => any, message?: string) => Promise<boolean>,
+    ...args: A
+  ) => R
 ) {
   Then(
     pattern,
-    arity(code.length, async (...args: A) => {
-      world.parameters.errorTracker = []
-      await code.apply(world, args)
-      flush(world.parameters.errorTracker)
+    arity(code.length - 1, async function (this: IWorld, ...args: A) {
+      const errorTracker: [JestAssertionError, string | undefined][] = [];
+      async function soft(fn: () => any, message?: string) {
+        try {
+          await fn();
+          return true;
+        } catch (e: unknown) {
+          if (e instanceof JestAssertionError) errorTracker.push([e, message]);
+          else throw e;
+          return false;
+        }
+      }
+      args.push(soft);
+      await code.apply(this, [soft, ...args]);
+      flush(errorTracker);
     })
-  )
+  );
 }

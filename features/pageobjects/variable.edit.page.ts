@@ -1,26 +1,26 @@
-import VariablePage from "./variable.page.js"
-import { $macrodroid } from "./page.js"
+import VariableBasePage from "./variableBase.page.js";
+import { $byId } from "../helpers/selectors.js";
 
-class CreateVariablePage extends VariablePage {
+class EditVariablePage extends VariableBasePage {
   public get trueRadioBtn() {
-    return $macrodroid("trueRadio")
+    return $byId("trueRadio");
   }
 
   public get falseRadioBtn() {
-    return $macrodroid("falseRadio")
+    return $byId("falseRadio");
   }
 
   public get valueInput() {
-    return $macrodroid("enter_variable_dialog_value")
+    return $byId("enter_variable_dialog_value");
   }
 
   public async setValue(value: string | boolean | number) {
     if (typeof value === "boolean")
-      await (value ? this.trueRadioBtn : this.falseRadioBtn).click()
+      await (value ? this.trueRadioBtn : this.falseRadioBtn).click();
     else if (["string", "number"].includes(typeof value))
-      await this.valueInput.setValue(value)
-    await this.clickOk()
+      await this.valueInput.setValue(value);
+    await this.clickOk();
   }
 }
 
-export default new CreateVariablePage()
+export default new EditVariablePage();

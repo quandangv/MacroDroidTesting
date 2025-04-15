@@ -1,0 +1,30 @@
+Feature: Verify that the user is able to add action blocks
+
+  Scenario Outline: Add an action block with 1 action, 1 input and 1 output variable
+
+    Given I open the app on homeTab
+    When I click on the Action Blocks tile
+    And I add an Action Block
+    And name it "<BLOCK NAME>"
+    And set its description to "<DESCRIPTION>"
+    And I add components
+    | TYPE   | CATEGORY          | ITEM          | OPTIONS         |
+    | action | <ACTION CATEGORY> | <ACTION ITEM> | <ACTION OPTION> |
+    And I add variables
+    | DIRECTION | NAME          | TYPE          | VALUE          |
+    | input     | <INPUT NAME>  | <INPUT TYPE>  | <INPUT VALUE>  |
+    | output    | <OUTPUT NAME> | <OUTPUT TYPE> | <OUTPUT VALUE> |
+    Then the entity includes
+    | TYPE   | NAME                  | DETAILS                 |
+    | action | <ACTION DISPLAY NAME> | <DETAILS>               |
+    | input  | <INPUT NAME>          | Default: <INPUT DISPLAY>  |
+    | output | <OUTPUT NAME>         | Default: <OUTPUT DISPLAY> |
+
+    When I save it
+    Then I'm at the Action Blocks page
+    And the list includes
+    | NAME         | DETAILS               |
+    | <BLOCK NAME> | <ACTION DISPLAY NAME> |
+
+    Examples:
+      <addActionBlock.example.xlsx>

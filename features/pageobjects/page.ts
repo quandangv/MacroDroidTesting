@@ -1,14 +1,15 @@
-import { $ } from "@wdio/globals"
+import { $byId, $byType } from "../helpers/selectors";
 
-export class Page {}
+export default class Page {
+  public get appRoot() {
+    return $byId("action_bar_root");
+  }
 
-export function $macrodroid(id: string, text?: string) {
-  if (text == undefined) return $("id=com.arlosoft.macrodroid:id/" + id)
-  return $(
-    `//*[@resource-id="com.arlosoft.macrodroid:id/${id}" and @text="${text}"]`
-  )
-}
-
-export function $text(type: string, text: string) {
-  return $(`//${type}[@text="${text}"]`)
+  public async skipAds() {
+    while (!(await this.appRoot.isExisting())) {
+      driver.pause(1000);
+      const skipButton = $byType("button");
+      if (await skipButton.isExisting()) await skipButton.click();
+    }
+  }
 }

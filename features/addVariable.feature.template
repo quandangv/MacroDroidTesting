@@ -1,0 +1,26 @@
+Feature: Verify that the user is able to add global variables
+
+  Scenario Outline: Add a global variable and use it in a macro
+
+    Given I open the app on homeTab
+    When I click on the Variables tile
+    And I add a <TYPE> variable named <NAME>
+    Then the list includes
+    | NAME   | DETAILS |
+    | <NAME> | <TYPE>  |
+
+    When I go to homeTab
+    And click on the Add Macro tile
+    And I add an item in the trigger list
+    And choose "MacroDroid Specific" category and "MacroDroid Variable Change" item
+    Then there is a radio button "<NAME>"
+    
+    When I choose "<NAME>"
+    And choose "Any value change"
+    Then I'm at the Add Macro page
+    And the entity includes
+    | TYPE    | NAME                       | DETAILS                   |
+    | trigger | MacroDroid Variable Change | <NAME> (Any value change) |
+
+    Examples:
+      <addVariable.example.xlsx>

@@ -1,21 +1,21 @@
-import VariablePage from "./variable.page.js"
-import { $macrodroid, $text } from "./page.js"
+import VariableBasePage from "./variableBase.page.js";
+import { $byId, $byText } from "../helpers/selectors.js";
 
-class CreateVariablePage extends VariablePage {
+class CreateVariablePage extends VariableBasePage {
   public get nameInput() {
-    return $macrodroid("variable_new_variable_dialog_name")
+    return $byId("variable_new_variable_dialog_name");
   }
 
   public get typeDropdown() {
-    return $macrodroid("variable_new_variable_type_spinner")
+    return $byId("variable_new_variable_type_spinner");
   }
 
   public async createVariable(name: string, type: string) {
-    await this.nameInput.setValue(name)
-    await this.typeDropdown.click()
-    await $text("android.widget.CheckedTextView", type).click()
-    await this.clickOk()
+    await this.nameInput.setValue(name);
+    await this.typeDropdown.click();
+    await $byText("radio button", type, false).click();
+    await this.clickOk();
   }
 }
 
-export default new CreateVariablePage()
+export default new CreateVariablePage();

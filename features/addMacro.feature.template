@@ -1,0 +1,23 @@
+Feature: Verify that the user is able to add a macro (without marcro name)
+
+  Scenario Outline: Add a macro with trigger, action, constraint, and local variable
+
+    Given I open the app on homeTab
+    When I click on the Add Macro tile
+    And I add components
+    | TYPE       | CATEGORY          | ITEM                      | OPTIONS                              |
+    | trigger    | Applications      | App Install/Remove/Update | Application Removed, Any Application |
+    | action     | <ACTION CATEGORY> | <ACTION ITEM>             | <ACTION OPTION>                      |
+    | constraint | Device State      | Airplane Mode             | Airplane Mode Disabled               |
+    And I add variables
+    | NAME            | TYPE            | VALUE       |
+    | <VARIABLE NAME> | <VARIABLE TYPE> | <VALUE>     |
+    Then the entity includes
+    | TYPE       | NAME                   | DETAILS         |
+    | trigger    | Application Removed    | Any Application |
+    | action     | <DISPLAY NAME>         | <DETAILS>       |
+    | constraint | Airplane Mode Disabled |                 |
+    | variable   | <VARIABLE NAME>        | <DISPLAY VALUE> |
+
+    Examples:
+    <addMacro.example.xlsx>
