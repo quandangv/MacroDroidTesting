@@ -1,0 +1,20 @@
+name: Automated Test on Android
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: [self-hosted, linux]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm ci
+      - name: Run the tests
+        run: npx wdio
+      - name: Generate the report
+        run: allure generate --single-file
+      - run: zip -j testResults.zip allure-report/index.html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: testResults.zip
