@@ -1,7 +1,8 @@
 import { $byId, $byType } from "../helpers/selectors";
 
+/**Base class for all page objects */
 export default class Page {
-  public get appRoot() {
+  private get appRoot() {
     return $byId("action_bar_root");
   }
 

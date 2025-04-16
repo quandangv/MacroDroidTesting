@@ -1,7 +1,8 @@
-import VariableBasePage from "./variableBase.page.js";
+import DialogBase from "./dialogBase.js";
 import { $byId } from "../helpers/selectors.js";
 
-class EditVariablePage extends VariableBasePage {
+/**Represents the dialog to edit variables on the app */
+class EditVariablePage extends DialogBase {
   public get trueRadioBtn() {
     return $byId("trueRadio");
   }
@@ -14,6 +15,7 @@ class EditVariablePage extends VariableBasePage {
     return $byId("enter_variable_dialog_value");
   }
 
+  /**Set the value of the variable */
   public async setValue(value: string | boolean | number) {
     if (typeof value === "boolean")
       await (value ? this.trueRadioBtn : this.falseRadioBtn).click();
@@ -22,5 +24,4 @@ class EditVariablePage extends VariableBasePage {
     await this.clickOk();
   }
 }
-
 export default new EditVariablePage();

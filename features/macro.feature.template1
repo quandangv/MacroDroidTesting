@@ -1,4 +1,4 @@
-Feature: macros automatically execute actions when certain triggers occur
+Feature: Macros
 
   Scenario Outline: verify that the user is able to add a macro (without marcro name)
 

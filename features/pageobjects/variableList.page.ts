@@ -1,9 +1,8 @@
 import { xpath } from "../helpers/selectors.js";
-import { EntityList } from "./entityList.page.js";
+import { EntityList } from "./entityList.js";
 import variableCreatePage from "./variable.create.page.js";
-/**
- * sub page containing specific selectors and methods for a specific page
- */
+
+/**Represents the list of global variables on the app */
 class VariableListPage extends EntityList {
   constructor() {
     super("fab", "variables_activity_list", variableCreatePage);
@@ -18,9 +17,8 @@ class VariableListPage extends EntityList {
     );
   }
 
-  protected override get descriptionId(): string {
+  protected override get detailId(): string {
     return "variable_cell_badge";
   }
 }
-
 export default new VariableListPage();

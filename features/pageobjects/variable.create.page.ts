@@ -1,7 +1,8 @@
-import VariableBasePage from "./variableBase.page.js";
+import DialogBase from "./dialogBase.js";
 import { $byId, $byText } from "../helpers/selectors.js";
 
-class CreateVariablePage extends VariableBasePage {
+/**Represents the dialog to create variables on the app */
+class CreateVariablePage extends DialogBase {
   public get nameInput() {
     return $byId("variable_new_variable_dialog_name");
   }
@@ -17,5 +18,4 @@ class CreateVariablePage extends VariableBasePage {
     await this.clickOk();
   }
 }
-
 export default new CreateVariablePage();

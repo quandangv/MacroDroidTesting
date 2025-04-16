@@ -16,6 +16,7 @@
     "wdio": "wdio run ./wdio.conf.ts"
   },
   "dependencies": {
-    "appium": "^2.17.1"
+    "appium": "^2.17.1",
+    "wdio-video-reporter": "^6.1.1"
   }
 }

@@ -3,8 +3,11 @@ import fs from "fs";
 import path from "path";
 import xlsx, { CellAddress } from "xlsx";
 
+const savePassedRecordings = true;
 const specsPath = "./features";
 const generatedSpecsPath = "./generated/features";
+const allureResultsDir = "allure-results";
+
 async function generateFeatureFiles(directory: string, exportDir: string) {
   for (const entry of fs.readdirSync(directory, {
     withFileTypes: true,
@@ -28,7 +31,6 @@ async function generateFeatureFiles(directory: string, exportDir: string) {
       for (const line of content.split(/\r?\n/)) {
         const match = line.match(/<([^>]*\.example\.xlsx)>/);
         if (match) {
-          console.log("reading xlsx from " + line);
           let indent = line.substring(0, match.index);
           if (indent.trim().length > 0)
             throw Error(
@@ -67,15 +69,16 @@ async function generateFeatureFiles(directory: string, exportDir: string) {
           output.write("\n" + line);
         }
       }
-      console.log("done");
     }
   }
 }
+
 export const config: WebdriverIO.Config = {
   runner: "local",
   tsConfigPath: "./tsconfig.json",
 
   port: 4723,
+  specs: ["./generated/features/**/*.feature"],
   exclude: [],
   maxInstances: 1,
   capabilities: [
@@ -99,15 +102,15 @@ export const config: WebdriverIO.Config = {
     [
       "allure",
       {
-        outputDir: "allure-results",
+        outputDir: allureResultsDir,
         disableWebdriverStepsReporting: true,
-        disableWebdriverScreenshotsReporting: false,
+        useCucumberStepReporter: true,
       },
     ],
   ],
 
   cucumberOpts: {
-    require: ["./features/step-definitions/steps.ts"],
+    require: ["./features/step-definitions/**/*.ts"],
     backtrace: false,
     requireModule: [],
     dryRun: false,
@@ -121,24 +124,26 @@ export const config: WebdriverIO.Config = {
     ignoreUndefinedDefinitions: false,
   },
 
-  onPrepare: function (config, _cap) {
-    config.specs = ["./generated/features/**/*.feature"];
+  onPrepare(_config, _cap) {
+    fs.rmSync(allureResultsDir, { force: true, recursive: true });
     fs.rmSync(generatedSpecsPath, { force: true, recursive: true });
     generateFeatureFiles(specsPath, generatedSpecsPath);
   },
 
-  beforeScenario: function (_world, _context) {
-    driver.startRecordingScreen();
+  async beforeScenario(_world, _context) {
+    await driver.executeScript("mobile: startMediaProjectionRecording", []);
   },
-  afterStep: async function (_step, _scenario, { error }, _context) {
-    if (error) {
-      await driver.takeScreenshot();
-    }
-  },
-  afterScenario: async function (world, _result, _ontext) {
+
+  async afterScenario(world, { passed }, context) {
+    const recording = await driver.executeScript(
+      "mobile: stopMediaProjectionRecording",
+      []
+    );
+    if (!savePassedRecordings && passed) return;
+    context.parameters.lastPickleId = world.pickle.id;
     allureReporter.addAttachment(
-      world.pickle.name,
-      await driver.stopRecordingScreen(),
+      `${world.pickle.name} - ${world.result?.status} - ${world.testCaseStartedId}`,
+      Buffer.from(recording, "base64"),
       "video/mp4"
     );
   },

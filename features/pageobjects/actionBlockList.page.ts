@@ -1,8 +1,7 @@
 import actionBlockPage from "./actionBlock.page.js";
-import { EntityList } from "./entityList.page.js";
-/**
- * sub page containing specific selectors and methods for a specific page
- */
+import { EntityList } from "./entityList.js";
+
+/**Represents the list of action blocks on the app */
 class ActionBlockListPage extends EntityList {
   constructor() {
     super("fab", "actionBlocksList", actionBlockPage);
@@ -12,9 +11,8 @@ class ActionBlockListPage extends EntityList {
     return "name";
   }
 
-  protected override get descriptionId(): string {
+  protected override get detailId(): string {
     return "actionsList";
   }
 }
-
 export default new ActionBlockListPage();

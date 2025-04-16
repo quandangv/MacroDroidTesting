@@ -1,10 +1,8 @@
 import { $byId, $byText, $byType } from "../helpers/selectors.js";
 import Page from "./page.js";
 
-/**
- * sub page containing specific selectors and methods for a specific page
- */
-export class ComponentPage extends Page {
+/**Represents the pages to select the type of trigger, action, or constraint on the app */
+class ComponentPage extends Page {
   public async clickCategory(name: string) {
     await $byId("category_name", name).click();
   }
@@ -13,6 +11,12 @@ export class ComponentPage extends Page {
     await $byId("select_item_name", name).click();
   }
 
+  /**
+   * Fill the current dialog and press Ok
+   * If the dialog has radio buttons, select the button whose text matches `content`
+   * If the dialog has a text box, enter `content` to it
+   * @param content The content to fill the dialog with
+   */
   public async fillDialog(content: string) {
     if (await $byType("radio button").isExisting())
       await $byText("radio button", content).click();
@@ -22,5 +26,4 @@ export class ComponentPage extends Page {
     await $byText("button", "OK").click();
   }
 }
-
 export const componentPage = new ComponentPage();

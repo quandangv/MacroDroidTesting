@@ -1,7 +1,7 @@
 import { $byId } from "../helpers/selectors.js";
 import Page from "./page.js";
 
-export default class VariableBasePage extends Page {
+export default class DialogBase extends Page {
   private get btnOk() {
     return $byId("okButton");
   }

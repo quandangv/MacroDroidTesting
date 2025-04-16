@@ -1,13 +1,13 @@
-Feature: an action block is a reusable list of actions that can be called from multiple macros or action blocks
+Feature: Action Blocks
 
   Scenario Outline: verify that the user is able to add action blocks
 
     Given I open the app on homeTab
     When I click on the Action Blocks tile
     And I add an item
-    And name it "<BLOCK NAME>"
+    And name it "<NAME>"
     And set its description to "<DESCRIPTION>"
-    And I add components
+    And I add a component
     | TYPE   | CATEGORY          | ITEM          | OPTIONS         |
     | action | <ACTION CATEGORY> | <ACTION ITEM> | <ACTION OPTION> |
     And I add variables
@@ -15,8 +15,8 @@ Feature: an action block is a reusable list of actions that can be called from m
     | input     | <INPUT NAME>  | <INPUT TYPE>  | <INPUT VALUE>  |
     | output    | <OUTPUT NAME> | <OUTPUT TYPE> | <OUTPUT VALUE> |
     Then the entity includes
-    | TYPE   | NAME                  | DETAILS                 |
-    | action | <ACTION DISPLAY NAME> | <DETAILS>               |
+    | TYPE   | NAME                  | DETAILS                   |
+    | action | <ACTION DISPLAY NAME> | <ACTION DISPLAY DETAILS>  |
     | input  | <INPUT NAME>          | Default: <INPUT DISPLAY>  |
     | output | <OUTPUT NAME>         | Default: <OUTPUT DISPLAY> |
 
@@ -24,7 +24,7 @@ Feature: an action block is a reusable list of actions that can be called from m
     Then I'm at the Action Blocks page
     And the list includes
     | NAME         | DETAILS               |
-    | <BLOCK NAME> | <ACTION DISPLAY NAME> |
+    | <NAME> | <ACTION DISPLAY NAME> |
 
     Examples:
       <actionBlock.add.example.xlsx>

@@ -2,22 +2,24 @@ import { $ } from "@wdio/globals";
 import { $byId, $byText } from "../helpers/selectors.js";
 import Page from "./page.js";
 
-/**
- * sub page containing specific selectors and methods for a specific page
- */
+/**Represents the home tab on the app */
 class DashboardPage extends Page {
+  /**Button to skip the tutorial */
   public get btnSkip() {
     return $byId("button_skip");
   }
 
+  /**A button on the ad to upgrade to the pro version */
   public get btnUpgradeNow() {
     return $byId("upgradeNowButton");
   }
 
+  /**The button to skip the pro version ad */
   public get btnNavigateUp() {
     return $("~Navigate up");
   }
 
+  /**Button to discard the changes made to the current entity */
   public get btnDiscard() {
     return $byText("button", "DISCARD");
   }
@@ -38,10 +40,12 @@ class DashboardPage extends Page {
     return $byId("navigation_settings");
   }
 
+  /**Click on a tile on the home tab */
   public async clickTile(name: string) {
     await $byId("title", name).click();
   }
 
+  /**Use driver.back() to go back to the home tab. Will discard any changes */
   public async goToDashboard() {
     if (await this.btnSkip.isExisting()) await this.btnSkip.click();
     for (let i = 0; i < 10; i++) {
@@ -54,5 +58,4 @@ class DashboardPage extends Page {
     throw Error("Can't reach the home page");
   }
 }
-
 export default new DashboardPage();

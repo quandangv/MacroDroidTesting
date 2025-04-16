@@ -1,4 +1,4 @@
-Feature: Verify that added global variables can be used in macros
+Feature: Global Variables
 
   Scenario Outline: Add a global variable and use it in a macro
 
