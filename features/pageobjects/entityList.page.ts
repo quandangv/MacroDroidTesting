@@ -4,7 +4,7 @@ import Page from "./page.js";
 /**
  * sub page containing specific selectors and methods for a specific page
  */
-export class ComponentList extends Page {
+export class BaseList extends Page {
   addButtonId: string;
   listId: string;
   addPage: Page | null;
@@ -26,10 +26,6 @@ export class ComponentList extends Page {
 
   protected get nameId() {
     return "macro_edit_entry_name";
-  }
-
-  protected get descriptionId() {
-    return "macro_edit_entry_detail";
   }
 
   public async clickAdd() {
@@ -58,22 +54,32 @@ export class ComponentList extends Page {
     );
   }
 
-  /**
-   * Get the description of the item with a specific name from the list, if a description is available.
-   * Child classes extend this method to expand the list from the collapsed state before retrieving, hence the async keyword.
-   * @param name The text to search the item with
-   * @returns The description of the item found, or empty if it has no description
-   */
-  public async retrieveDescription(name: string) {
+  public async retrieveData(name: string): Promise<Record<string, string>> {
+    await this.retrieveItem(name);
+    return {
+      NAME: name,
+    };
+  }
+}
+export class EntityList extends BaseList {
+  protected get descriptionId() {
+    return "macro_edit_entry_detail";
+  }
+
+  public async retrieveData(name: string): Promise<Record<string, string>> {
     const description = (await this.retrieveItem(name)).$(
-      `id=com.arlosoft.macrodroid:id/${this.descriptionId}`
+      "//" + xpath("text", this.descriptionId)
     );
-    if (await description.isExisting()) return await description.getText();
-    return "";
+    return {
+      NAME: name,
+      DETAILS: (await description.isExisting())
+        ? await description.getText()
+        : "",
+    };
   }
 }
 
-export class CollapsibleList extends ComponentList {
+export class CollapsibleList extends EntityList {
   toggleId: string;
 
   constructor(

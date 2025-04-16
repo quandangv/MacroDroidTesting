@@ -1,5 +1,5 @@
 import { $byId } from "../helpers/selectors";
-import { ComponentList } from "./componentList.section";
+import { EntityList } from "./entityList.page";
 import Page from "./page";
 
 export default class EntityPage extends Page {
@@ -25,9 +25,9 @@ export default class EntityPage extends Page {
     await this.descriptionInput.setValue(value);
   }
 
-  public componentList(name: string): ComponentList {
+  public componentList(name: string): EntityList {
     const prop = this[name as keyof typeof this];
-    if (prop instanceof ComponentList) return prop;
+    if (prop instanceof EntityList) return prop;
     throw Error(`${name} is not a component list in ${this.constructor.name}`);
   }
 

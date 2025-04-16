@@ -1,10 +1,10 @@
-Feature: Verify that the user is able to add action blocks
+Feature: an action block is a reusable list of actions that can be called from multiple macros or action blocks
 
-  Scenario Outline: Add an action block with 1 action, 1 input and 1 output variable
+  Scenario Outline: verify that the user is able to add action blocks
 
     Given I open the app on homeTab
     When I click on the Action Blocks tile
-    And I add an Action Block
+    And I add an item
     And name it "<BLOCK NAME>"
     And set its description to "<DESCRIPTION>"
     And I add components
@@ -27,4 +27,4 @@ Feature: Verify that the user is able to add action blocks
     | <BLOCK NAME> | <ACTION DISPLAY NAME> |
 
     Examples:
-      <addActionBlock.example.xlsx>
+      <actionBlock.add.example.xlsx>

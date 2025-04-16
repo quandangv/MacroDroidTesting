@@ -1,10 +1,10 @@
 import { xpath } from "../helpers/selectors.js";
-import { ComponentList } from "./componentList.section.js";
+import { EntityList } from "./entityList.page.js";
 import variableCreatePage from "./variable.create.page.js";
 /**
  * sub page containing specific selectors and methods for a specific page
  */
-class VariableListPage extends ComponentList {
+class VariableListPage extends EntityList {
   constructor() {
     super("fab", "variables_activity_list", variableCreatePage);
   }

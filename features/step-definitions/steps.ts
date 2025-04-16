@@ -8,9 +8,10 @@ import { ComponentPage, componentPage } from "../pageobjects/component.page.js";
 import variableEditPage from "../pageobjects/variable.edit.page.js";
 import actionBlockListPage from "../pageobjects/actionBlockList.page.js";
 import EntityPage from "../pageobjects/entity.page.js";
-import { ComponentList } from "../pageobjects/componentList.section.js";
+import { BaseList, EntityList } from "../pageobjects/entityList.page.js";
 import { $byId, $byText, ElementType, xpath } from "../helpers/selectors.js";
 import variableListPage from "../pageobjects/variableList.page.js";
+import macroListPage from "../pageobjects/macroList.page.js";
 
 const knownPages: Record<string, any> = {
   "Add Macro": macroPage,
@@ -28,26 +29,9 @@ function getPageAsserter<T>(
     throw Error(`Current page (${page}) is not ${descriptor}`);
   };
 }
-// function getEntityPage() {
-//   const page = world.parameters.page;
-//   if (page instanceof EntityPage) return page;
-//   throw Error("Current page is not an entity page");
-// }
-
-// function getListPage() {
-//   const page = world.parameters.page;
-//   if (page instanceof ComponentList) return page;
-//   throw Error("Current page is not a list page");
-// }
-
-// function getComponentPage() {
-//   const page = world.parameters.page;
-//   if (page instanceof ComponentPage) return page;
-//   throw Error("Current page is not a component page");
-// }
 
 const getEntityPage = getPageAsserter(EntityPage, "an entity page");
-const getListPage = getPageAsserter(ComponentList, "a list page");
+const getListPage = getPageAsserter(BaseList, "a list page");
 const getComponentPage = getPageAsserter(ComponentPage, "a component page");
 
 async function gotoTab(
@@ -55,6 +39,7 @@ async function gotoTab(
 ) {
   await dashboardPage.goToDashboard();
   await dashboardPage[tab].click();
+  if (tab == "macrosTab") world.parameters.page = macroListPage;
 }
 
 Given(/^I open the app on (\w+Tab)$/, gotoTab);
@@ -70,6 +55,11 @@ Then("I'm at the {} page", async function (name: string) {
   if (name == "Add Macro") {
     await expect($byId("editMacroContainer")).toExist();
     this.parameters.page = macroPage;
+  } else if (name == "Macro List") {
+    await expect(
+      (await $byId("titleText").getText()).startsWith("Macros")
+    ).toBeTruthy();
+    this.parameters.page = macroListPage;
   } else {
     const title = $(`//${xpath(undefined, "toolbar")}/${xpath("text")}`);
     await expect(title).toHaveText(name);
@@ -130,7 +120,7 @@ When(
   "(I )add a(n) {word} variable named {}",
   async function (type: string, name: string) {
     const varList =
-      this.parameters.page instanceof ComponentList
+      this.parameters.page instanceof EntityList
         ? this.parameters.page
         : getEntityPage().componentList("variable");
     await varList.clickAdd();
@@ -138,11 +128,15 @@ When(
   }
 );
 
+When("(I )open the item named {string}", async function (name: string) {
+  await (await getListPage().retrieveItem(name)).click();
+});
+
 When("(I )add variables", async function (dataTable: DataTable) {
   const variables = dataTable.hashes();
   for (const variable of variables) {
     const varList =
-      this.parameters.page instanceof ComponentList
+      this.parameters.page instanceof EntityList
         ? this.parameters.page
         : getEntityPage().componentList(variable.DIRECTION ?? "variable");
     await varList.clickAdd();
@@ -187,15 +181,17 @@ TryThen("the entity includes", async function (soft, dataTable: DataTable) {
   const items = dataTable.hashes();
   for (const item of items) {
     const component = getEntityPage().componentList(item.TYPE);
-    await soft(async () => {
+    await soft.wrap(async () => {
       await expect(await component.expandList()).toBeExisting({
         message: `There is no item in the ${item.TYPE} list`,
       });
       await expect(await component.retrieveItem(item.NAME)).toBeExisting({
         message: `Can't find the ${item.TYPE} with name ${item.NAME}`,
       });
-      expect(await component.retrieveDescription(item.NAME)).toBe(item.DETAILS);
     }, `From ${JSON.stringify(item)}`);
+    const data = await component.retrieveData(item.NAME);
+    for (const key in item)
+      if (key != "TYPE") soft.expect(data[key]).toBe(item[key]);
   }
 });
 
@@ -203,15 +199,16 @@ TryThen("the list includes", async function (soft, dataTable: DataTable) {
   const items = dataTable.hashes();
   const component = getListPage();
   for (const item of items) {
-    await soft(async () => {
+    await soft.wrap(async () => {
       await expect(await component.expandList()).toBeExisting({
         message: `There is no item in the list`,
       });
       await expect(await component.retrieveItem(item.NAME)).toBeExisting({
         message: `Can't find the item with name ${item.NAME}`,
       });
-      expect(await component.retrieveDescription(item.NAME)).toBe(item.DETAILS);
     }, `From ${JSON.stringify(item)}`);
+    const data = await component.retrieveData(item.NAME);
+    for (const key in item) soft.expect(data[key]).toBe(item[key]);
   }
 });
 

@@ -1,4 +1,4 @@
-Feature: Verify that the user is able to add global variables
+Feature: Verify that added global variables can be used in macros
 
   Scenario Outline: Add a global variable and use it in a macro
 
@@ -23,4 +23,4 @@ Feature: Verify that the user is able to add global variables
     | trigger | MacroDroid Variable Change | <NAME> (Any value change) |
 
     Examples:
-      <addVariable.example.xlsx>
+      <variable.example.xlsx>

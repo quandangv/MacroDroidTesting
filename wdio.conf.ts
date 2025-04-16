@@ -101,7 +101,7 @@ export const config: WebdriverIO.Config = {
       {
         outputDir: "allure-results",
         disableWebdriverStepsReporting: true,
-        disableWebdriverScreenshotsReporting: true,
+        disableWebdriverScreenshotsReporting: false,
       },
     ],
   ],
@@ -111,7 +111,7 @@ export const config: WebdriverIO.Config = {
     backtrace: false,
     requireModule: [],
     dryRun: false,
-    failFast: true,
+    failFast: false,
     name: [],
     snippets: true,
     source: true,
@@ -130,7 +130,11 @@ export const config: WebdriverIO.Config = {
   beforeScenario: function (_world, _context) {
     driver.startRecordingScreen();
   },
-
+  afterStep: async function (_step, _scenario, { error }, _context) {
+    if (error) {
+      await driver.takeScreenshot();
+    }
+  },
   afterScenario: async function (world, _result, _ontext) {
     allureReporter.addAttachment(
       world.pickle.name,

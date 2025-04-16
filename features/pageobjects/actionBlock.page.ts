@@ -1,6 +1,6 @@
 import { ChainablePromiseElement } from "webdriverio";
 import { $byId } from "../helpers/selectors.js";
-import { CollapsibleList, ComponentList } from "./componentList.section.js";
+import { CollapsibleList, EntityList } from "./entityList.page.js";
 import EntityPage from "./entity.page.js";
 /**
  * sub page containing specific selectors and methods for a specific page
@@ -17,7 +17,7 @@ class ActionBlockPage extends EntityPage {
     "inputCollapseExpandButton"
   );
 
-  public action = new ComponentList("addActionButton", "actionsList", null);
+  public action = new EntityList("addActionButton", "actionsList", null);
 
   public output = new CollapsibleList(
     "addOutputVariableButton",

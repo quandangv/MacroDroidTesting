@@ -1,0 +1,53 @@
+Feature: macros automatically execute actions when certain triggers occur
+
+  Scenario Outline: verify that the user is able to add a macro (without marcro name)
+
+    Given I open the app on homeTab
+    When I click on the Add Macro tile
+    And I add components
+    | TYPE       | CATEGORY          | ITEM                      | OPTIONS                              |
+    | trigger    | Applications      | App Install/Remove/Update | Application Removed, Any Application |
+    | action     | <ACTION CATEGORY> | <ACTION ITEM>             | <ACTION OPTION>                      |
+    | constraint | Device State      | Airplane Mode             | Airplane Mode Disabled               |
+    And I add variables
+    | NAME            | TYPE            | VALUE       |
+    | <VARIABLE NAME> | <VARIABLE TYPE> | <VALUE>     |
+    Then the entity includes
+    | TYPE       | NAME                   | DETAILS         |
+    | trigger    | Application Removed    | Any Application |
+    | action     | <DISPLAY NAME>         | <DETAILS>       |
+    | constraint | Airplane Mode Disabled |                 |
+    | variable   | <VARIABLE NAME>        | <DISPLAY VALUE> |
+
+    Examples:
+    <macro.add.example.xlsx>
+
+  Scenario Outline: verify that the user can edit saved macros 
+
+    Given I open the app on homeTab
+    When I click on the Add Macro tile
+    And name it "<NAME>"
+    And I add components
+    | TYPE       | CATEGORY          | ITEM                      | OPTIONS                              |
+    | trigger    | Applications      | App Install/Remove/Update | Application Removed, Any Application |
+    | action     | <ACTION CATEGORY> | <ACTION ITEM>             | <ACTION OPTIONS>                     |
+    | constraint | Device State      | Airplane Mode             | Airplane Mode Disabled               |
+    And save it
+    And I go to macrosTab
+    Then the list includes
+    | NAME   | TRIGGERS                              | ACTIONS       | CONSTRAINTS            |
+    | <NAME> | Application Removed (Any Application) | <ACTION ITEM> | Airplane Mode Disabled |
+
+    When I open the item named "<NAME>"
+    Then I'm at the Add Macro page
+    And I add components
+    | TYPE       | CATEGORY            | ITEM                      | OPTIONS                               |
+    | action     | <ACTION CATEGORY 2> | <ACTION ITEM 2>           | <ACTION OPTIONS 2>                    |
+    And save it
+    Then I'm at the Macro List page
+    And the list includes
+    | NAME   | TRIGGERS                              | ACTIONS                        | CONSTRAINTS            |
+    | <NAME> | Application Removed (Any Application) | <ACTION ITEM>, <ACTION ITEM 2> | Airplane Mode Disabled |
+    
+    Examples:
+    <macro.edit.example.xlsx>

@@ -27,7 +27,7 @@ class DashboardPage extends Page {
   }
 
   public get macrosTab() {
-    return $byId("navigation_macros");
+    return $byId("navigation_macro_list");
   }
 
   public get templatesTab() {

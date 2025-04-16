@@ -1,9 +1,9 @@
 import actionBlockPage from "./actionBlock.page.js";
-import { ComponentList } from "./componentList.section.js";
+import { EntityList } from "./entityList.page.js";
 /**
  * sub page containing specific selectors and methods for a specific page
  */
-class ActionBlockListPage extends ComponentList {
+class ActionBlockListPage extends EntityList {
   constructor() {
     super("fab", "actionBlocksList", actionBlockPage);
   }
