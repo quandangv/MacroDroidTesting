@@ -131,9 +131,7 @@ export const config: WebdriverIO.Config = {
   },
 
   async beforeScenario(_world, _context) {
-    await driver.executeScript("mobile: startMediaProjectionRecording", [
-      { resolution: "480x320" },
-    ]);
+    await driver.executeScript("mobile: startMediaProjectionRecording", []);
   },
 
   async afterScenario(world, { passed }, context) {
