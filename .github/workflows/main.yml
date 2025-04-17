@@ -25,7 +25,7 @@ jobs:
       - name: Generate the report
         run: allure generate
       - name: Zip the report file
-        run: zip -j testResults.zip allure-report/*
+        run: zip -r testResults.zip allure-report/*
       - uses: actions/upload-artifact@v4
         with:
           name: test-results
