@@ -10,11 +10,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
   test:
+    runs-on: [self-hosted, linux]
     needs: dependencies
     steps:
       - name: Run the tests
         run: npx wdio
   upload_artifacts:
+    runs-on: [self-hosted, linux]
     needs: test
     steps:
       - name: Generate the report
