@@ -17,3 +17,9 @@ Data for test cases are stored in /features/\*.example.xlsx files. They are inse
 The code for each steps of the .feature.template files are located at /features/step-definitions. It uses helpers from /features/helpers and page objects from /features/pageobjects.
 
 All platform-specific code should be in a helper file, such as features/helpers/selectors.ts, to improve scalability.
+
+## Test Report
+
+After running the tests, an Allure report can be generated and served using `allure generate && allure open`
+
+Reports from previous runs can be found as artifacts in the Actions page of the Github repo. They can be extracted and served by running `allure open` in the folder containing `allure-report`
