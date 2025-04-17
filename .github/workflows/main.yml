@@ -16,6 +16,7 @@ jobs:
       - name: Run the tests
         run: npx wdio
   upload_artifacts:
+    if: ${{ always() }}
     runs-on: [self-hosted, linux]
     needs: test
     steps:
