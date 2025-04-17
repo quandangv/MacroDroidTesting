@@ -13,7 +13,8 @@ jobs:
         run: npx wdio
       - name: Generate the report
         run: allure generate --single-file
-      - run: zip -j testResults.zip allure-report/index.html
+      - name: Zip the report file
+        run: zip -j testResults.zip allure-report/index.html
       - uses: actions/upload-artifact@v4
         with:
           name: test-results
